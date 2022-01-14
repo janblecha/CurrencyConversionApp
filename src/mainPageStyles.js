@@ -46,3 +46,9 @@ export const Spinner = styled.div`
         }
     }
 `;
+
+export const ErrorMessageWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+`;

@@ -7,6 +7,7 @@ import {
     SpinnerWrapper,
     Spinner,
     PageContent,
+    ErrorMessageWrapper,
 } from './mainPageStyles';
 
 import { fetchCurrencies } from './utils';
@@ -32,7 +33,12 @@ export const MainPage: React.FC = () => {
                 <Title> CURRENCY CONVERTER</Title>
             </PageHeader>
             <PageContent>
-                {isError && <div>Error: {error?.message}</div>}
+                {isError && (
+                    <ErrorMessageWrapper>
+                        Error:{' '}
+                        {error?.message || 'Sorry, but something is broken'}
+                    </ErrorMessageWrapper>
+                )}
                 {isLoading && (
                     <SpinnerWrapper>
                         <Spinner />
