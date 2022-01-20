@@ -46,7 +46,7 @@ export const MainPage: React.FC = () => {
                 )}
                 {data && (
                     <>
-                        <CurrencyConversionForm options={options} />
+                        <CurrencyConversionForm data={data.data} />
                         <CurrencyTable data={data.data} date={data.date} />
                     </>
                 )}

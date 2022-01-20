@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IOption } from '../types';
+import { IOption, ICurrency } from '../types';
 import {
     FormWrapper,
     FormItem,
@@ -15,39 +15,41 @@ import {
 } from './currencyConversionFormStyles';
 
 interface Props {
-    options?: IOption[];
+    data?: ICurrency[];
 }
 
-export const CurrencyConversionForm = ({ options }: Props) => {
+export const CurrencyConversionForm = ({ data }: Props) => {
     const [value, setValue] = useState<string>('');
-    const [conversionRate, setConversionRate] = useState<string>('');
+    const [selectedCurrency, setselectedCurrency] = useState<string>('');
     const [result, setResult] = useState<string>('0');
 
-    useEffect(() => {
-        options && setConversionRate(options[0]?.value);
-    }, [options]);
-
-    const convertValue = (): void => {
-        const formattedConversionRate: string = conversionRate.replace(
-            ',',
-            '.'
+    const convertValue = () => {
+        const selectedConversionItem = data?.find(
+            (item) => item.kurz === selectedCurrency
         );
 
-        const result: string = (
-            +value * +formattedConversionRate
-        ).toLocaleString('cs-CZ', {
-            style: 'currency',
-            currency: 'CZK',
-        });
+        if (!selectedConversionItem) {
+            return;
+        }
+
+        const conversionRate =
+            +selectedConversionItem?.kurz.replace(',', '.') /
+            +selectedConversionItem.množství;
+
+        const result: string = `${(+value / conversionRate)
+            .toFixed(2)
+            .toString()} ${selectedConversionItem.kód}`;
 
         setResult(result);
     };
 
-    const changeConversionRate = (e: React.ChangeEvent<HTMLSelectElement>) =>
-        setConversionRate(e.target.value);
-
     const changeValue = (e: React.ChangeEvent<HTMLInputElement>) =>
         setValue(e.target.value);
+
+    const options = data?.map((item: ICurrency) => ({
+        value: item.kurz,
+        label: item.kód,
+    }));
 
     return (
         <FormWrapper>
@@ -72,7 +74,9 @@ export const CurrencyConversionForm = ({ options }: Props) => {
                 <FormItem>
                     <Label htmlFor="valueInput">TO</Label>
                     <Select
-                        onChange={changeConversionRate}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                            setselectedCurrency(e.target.value)
+                        }
                         defaultValue={options?.[0].value}>
                         {' '}
                         {options?.map((option: IOption) => (
