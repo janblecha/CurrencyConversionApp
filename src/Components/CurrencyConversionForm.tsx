@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IOption, ICurrency } from '../types';
+import { ICurrency } from '../types';
 import {
     FormWrapper,
     FormItem,
@@ -20,12 +20,16 @@ interface Props {
 
 export const CurrencyConversionForm = ({ data }: Props) => {
     const [value, setValue] = useState<string>('');
-    const [selectedCurrency, setselectedCurrency] = useState<string>('');
+    const [selectedCurrency, setSelectedCurrency] = useState<string>('');
     const [result, setResult] = useState<string>('0');
+
+    useEffect(() => {
+        if (data) setSelectedCurrency(data[0].kód);
+    }, [data]);
 
     const convertValue = () => {
         const selectedConversionItem = data?.find(
-            (item) => item.kurz === selectedCurrency
+            (item) => item.kód === selectedCurrency
         );
 
         if (!selectedConversionItem) {
@@ -46,10 +50,7 @@ export const CurrencyConversionForm = ({ data }: Props) => {
     const changeValue = (e: React.ChangeEvent<HTMLInputElement>) =>
         setValue(e.target.value);
 
-    const options = data?.map((item: ICurrency) => ({
-        value: item.kurz,
-        label: item.kód,
-    }));
+    const options = data?.map((item: ICurrency) => item.kód.toString());
 
     return (
         <FormWrapper>
@@ -75,13 +76,13 @@ export const CurrencyConversionForm = ({ data }: Props) => {
                     <Label htmlFor="valueInput">TO</Label>
                     <Select
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                            setselectedCurrency(e.target.value)
+                            setSelectedCurrency(e.target.value)
                         }
-                        defaultValue={options?.[0].value}>
+                        defaultValue={options?.[0]}>
                         {' '}
-                        {options?.map((option: IOption) => (
-                            <option key={option.label} value={option.value}>
-                                {option.label}
+                        {options?.map((option: string, index) => (
+                            <option key={index} value={option}>
+                                {option}
                             </option>
                         ))}
                     </Select>

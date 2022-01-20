@@ -6,11 +6,6 @@ export interface ICurrency {
     kurz: string;
 }
 
-export interface IOption {
-    value: string;
-    label: string;
-}
-
 export interface IDataResponse {
     date: string;
     data: ICurrency[];
